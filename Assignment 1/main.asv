@@ -27,35 +27,16 @@ hold on
 ylim([-0.1 0.05]);
 subplot(4,1,1);
 plot(V_t(2,:), 'Linewidth', 2)
-title('2nd neuron');
-xlabel('Time (in 100us)');
-ylabel('Spikes');
+title('2nd 
 subplot(4,1,2);
 plot(V_t(4,:), 'Linewidth', 2)
-title('4th neuron');
-xlabel('Time (in 100us)');
-ylabel('Spikes');
 subplot(4,1,3);
 plot(V_t(6,:), 'Linewidth', 2)
-title('6th neuron');
-xlabel('Time (in 100us)');
-ylabel('Spikes');
 subplot(4,1,4);
 plot(V_t(8,:), 'Linewidth', 2)
-title('8th neuron');
-xlabel('Time (in 100us)');
-ylabel('Spikes');
 %legend('n=2','n=4','n=6','n=8')
-%title('LIF Model')
+title('LIF Model')
 hold off
-%% Problem 1(d)
-Neuron = [1,2,3,4,5,6,7,8,9,10];
-spike_time = [240,181.667,149,127.667,111.67 , 101,90.33 , 84, 77, 71 ]; %Manually calculated from above part!
-plot(Neuron, spike_time, 'linewidth', 2);
-title('Average time interval between spikes');
-xlabel('Neuron label');
-ylabel('Time (in 100us) ');
-
 %% Problem 2(c)
 El = -70e-3;
 alpha = 0.1;
@@ -90,9 +71,9 @@ hold on
 plot(V_t1(4,:), 'Linewidth', 2)
 plot(V_t2(4,:), 'Linewidth', 2)
 plot(V_t3(4,:), 'Linewidth', 2)
+%plot(V_t(4,:), 'Linewidth', 2)
+%plot(V_t(6,:), 'Linewidth', 2)
+%plot(V_t(8,:), 'Linewidth', 2)
 legend('RS','IB','CH')
 title('Izhikevich Model')
-xlabel('Time (in 100 us)');
-ylabel('Spikes');
 hold off
-%% 
