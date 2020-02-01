@@ -95,4 +95,33 @@ title('Izhikevich Model')
 xlabel('Time (in 100 us)');
 ylabel('Spikes');
 hold off
-%% 
+%% Problem 3(c)
+Iapp = 150e-12;
+T = 500e-3;
+%N = 10;
+del_t = 1e-4;
+%type = 1 - RS, 2 - IB, 3 - CH
+for j = 1:3
+    Iapp = Iapp + 100e-12;
+  %hold on;
+  figure(j);
+    sgtitle(sprintf('Current Applied: %f pA', Iapp*1e12));
+for i = 1:3
+if (i == 1)
+    neuron_type = 'RS';
+elseif (i==2)
+    neuron_type = 'IB';
+else
+    neuron_type = 'CH';
+end
+subplot(3,1,i);
+V_t = euler_method(i,Iapp,del_t);
+plot(V_t, 'linewidth', 2);
+title(sprintf('Neuron: %s',neuron_type));
+xlabel('Time (in 100us)');
+ylabel('Spikes');
+end
+%hold off;
+end
+%% Problem 4(a)
+
