@@ -123,5 +123,66 @@ ylabel('Spikes');
 end
 %hold off;
 end
-%% Problem 4(a)
-
+%% Problem 4
+%%Problem 4a
+T = 50e-3; 
+del_t = 0.01e-3;
+s = 5000;
+I_t = zeros(s,1);
+Io = 15e-6;
+for i = 2000:3000
+    I_t(i) = Io;
+end
+[V_t, I_na, I_k, I_l] = hh_model(I_t, del_t);
+figure(1)
+subplot(2,1,1)
+plot(I_t, 'linewidth', 2);
+title('External Current vs time');
+xlabel ('Time (in 10us)');
+ylabel ('Current (in A/cm2)');
+subplot(2,1,2)
+plot(V_t, 'linewidth', 2);
+title('Membrane Potential vs time');
+xlabel ('Time (in 10us)');
+ylabel ('Voltage (in V)');
+figure(2)
+plot(I_t, 'linewidth', 2);
+hold on;
+plot(I_na, 'linewidth', 2);
+hold on;
+plot(I_k, 'linewidth', 2);
+hold on;
+plot(I_l, 'linewidth', 2);
+hold on;
+legend('External Current', 'Sodium  Current', 'Potassium current', 'Leaky current');
+title('Currents vs time');
+xlabel ('Time (in 10us)');
+ylabel ('Current (in A/cm2)');
+%%Problem 4(b)
+P_na = I_na.*(V_t - 50e-3);
+P_k = I_k.*(V_t + 77e-3);
+P_l = I_l.*(V_t +55e-3);
+P_mc = V_t.*(I_t - I_na-I_k-I_l);
+figure(3)
+plot(P_na, 'linewidth', 2);
+hold on;
+plot(P_k, 'linewidth', 2);
+hold on;
+plot(P_l, 'linewidth', 2);
+hold on;
+plot(P_mc, 'linewidth', 2);
+title('Instantaneous Power vs Time');
+legend('Sodium Ion', 'Potassium Ion', 'Leaky Ions', 'Membrane Capacitor');
+xlabel('Time (in 10us)');
+ylabel('Power (in W/cm2)');
+%%Problem 4(c)
+P_total = (P_na + P_k + P_l + P_mc)*100; %100 factor for Area of 1um2
+E_total = zeros(s,1);
+for i = 2:s
+   E_total(i) = E_total(i-1) + P_total(i-1)*del_t;
+end
+figure(4)
+plot(E_total, 'linewidth', 2);
+title(sprintf('Total Energy dissipated: %d J', E_total(5000)))
+ylabel('Energy (in J)');
+xlabel('Time (in 10us)');
