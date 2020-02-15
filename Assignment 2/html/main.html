@@ -1,0 +1,546 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-02-15"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Problem 1</a></li><li><a href="#2">Problem 2a</a></li></ul></div><h2 id="1">Problem 1</h2><p>PART (a)</p><pre class="codeinput">T = 0.5;
+dt = 0.1e-3;
+k = 10;
+lambda = k*dt;
+time = (dt:dt:T);
+poisson_output = makedist(<span class="string">'Poisson'</span>,<span class="string">'lambda'</span>,lambda);
+t_size = length(time);
+stimulus = zeros(1,t_size);
+fprintf(<span class="string">'Time Instants: '</span>);
+<span class="keyword">for</span> i = 1:t_size
+    spike = random(poisson_output,1);
+    <span class="keyword">if</span> (spike &gt;= 1)
+        stimulus(1,i) = 1; <span class="comment">%spike-train</span>
+        fprintf(<span class="string">'%f, '</span>, i*dt); <span class="comment">%timestamp</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+figure(1);
+sgtitle(sprintf(<span class="string">'Problem 1'</span>));
+subplot(3,1,1);
+plot(time.*1000,stimulus(1,:), <span class="string">'Linewidth'</span>,2);
+title(<span class="string">'Poisson Stimulus'</span>);
+xlabel(<span class="string">'Spikes'</span>);
+ylabel(<span class="string">'Time (in ms) '</span>);
+<span class="comment">% PART (b) - Total Current Calculation</span>
+I0 = 1e-12;
+we = 500;
+tau = 15e-3;
+tau_s = tau/4;
+Iapplied = zeros(1,t_size);
+<span class="keyword">for</span> i = 1:t_size
+    <span class="keyword">for</span> t = 1:i
+        <span class="keyword">if</span> (stimulus(1,t) == 1)
+            Iapplied(1,i) = Iapplied(1,i) + I0*we*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+subplot(3,1,2);
+plot(time.*1000,Iapplied(1,:), <span class="string">'Linewidth'</span>,2);
+title(<span class="string">'Synaptic Current'</span>);
+ylabel(<span class="string">'Iapplied'</span>);
+xlabel(<span class="string">'Time (in ms)'</span>);
+<span class="comment">%Membrane Potential (AEF RS) :HW 1 Q3</span>
+V_t = euler_method(1,Iapplied,dt); <span class="comment">%Same function as used in HW1</span>
+subplot(3,1,3);
+plot(time.*1000, V_t, <span class="string">'linewidth'</span>, 2);
+title(sprintf(<span class="string">'Neuron: RS Response'</span>));
+xlabel(<span class="string">'Time (in ms)'</span>);
+ylabel(<span class="string">'Spikes'</span>);
+</pre><pre class="codeoutput">Time Instants: 0.030500, 0.059700, 0.083800, 0.131800, 0.296700, </pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="2">Problem 2a</h2><pre class="codeinput">Ns = 100;
+w0 = 50;
+sigma_w = 5;
+T = 0.5;
+dt = 1e-4;
+l_t = 1;
+lambda = l_t*dt;
+syn_strength = w0 + sigma_w*randn(Ns,1); <span class="comment">%Strength gaussian -- randn -- standard normal</span>
+time = (dt:dt:T);
+poisson_output = makedist(<span class="string">'Poisson'</span>, <span class="string">'lambda'</span>, lambda);
+t_size = length(time);
+m_syn_stimulus = zeros(Ns, t_size);
+<span class="keyword">for</span> i = 1:Ns <span class="comment">% Each Synapse</span>
+    <span class="keyword">for</span> j = 1:t_size <span class="comment">% Each time</span>
+        spike = random(poisson_output,1);
+        <span class="keyword">if</span> (spike &gt;= 1)
+         m_syn_stimulus(i,j) = 1; <span class="comment">%spike-train</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+I0 = 1e-12;
+tau = 15e-3;
+tau_s = tau/4;
+Iapplied = zeros(Ns,t_size);
+<span class="keyword">for</span> k = 1: Ns
+    <span class="keyword">for</span> i = 1:t_size
+        <span class="keyword">for</span> t = 1:i
+            <span class="keyword">if</span> (m_syn_stimulus(k,t) == 1)
+                Iapplied(k,i) = Iapplied(k,i) + I0*syn_strength(k,1)*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+I_total = sum(Iapplied, 1); <span class="comment">% Sum of all synapses 1 x 5000</span>
+figure(2);
+sgtitle(sprintf(<span class="string">'Neuron Response with w0 = 50 and sigma_w = 5 (2(a))'</span>));
+subplot(2,1,1);
+plot(time.*1000,I_total(1,:), <span class="string">'Linewidth'</span>,2);
+title(<span class="string">'Synaptic Current'</span>);
+ylabel(<span class="string">'Iapplied'</span>);
+xlabel(<span class="string">'Time (in ms)'</span>);
+<span class="comment">%Membrane Potential (AEF RS) :HW 1 Q3</span>
+V_t = euler_method(1,I_total,dt); <span class="comment">%Same function as used in HW1</span>
+subplot(2,1,2);
+plot(time.*1000, V_t, <span class="string">'linewidth'</span>, 2);
+title(sprintf(<span class="string">'Neuron: RS Response'</span>));
+xlabel(<span class="string">'Time (in ms)'</span>);
+ylabel(<span class="string">'Spikes'</span>);
+
+<span class="comment">%RESULT: NO SPIKES ISSUED, DUE TO LESS WEIGHTS</span>
+
+<span class="comment">%PART (b) -- SAME STIMULUS</span>
+w0 = 250;
+sigma_w = 25;
+syn_strength = w0 + sigma_w*randn(Ns,1); <span class="comment">%Strength gaussian -- randn -- standard normal</span>
+Iapplied = zeros(Ns,t_size);
+<span class="keyword">for</span> k = 1: Ns
+    <span class="keyword">for</span> i = 1:t_size
+        <span class="keyword">for</span> t = 1:i
+            <span class="keyword">if</span> (m_syn_stimulus(k,t) == 1)
+            Iapplied(k,i) = Iapplied(k,i) + I0*syn_strength(k,1)*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+I_total = sum(Iapplied, 1); <span class="comment">% Sum of all synapses 1 x 5000</span>
+figure(3);
+sgtitle(sprintf(<span class="string">'Neuron Response with w0 = 250 and sigma_w = 25 (2(b))'</span>));
+subplot(2,1,1);
+plot(time.*1000,I_total(1,:), <span class="string">'Linewidth'</span>,2);
+title(<span class="string">'Synaptic Current'</span>);
+ylabel(<span class="string">'Iapplied'</span>);
+xlabel(<span class="string">'Time (in ms)'</span>);
+<span class="comment">%Membrane Potential (AEF RS) :HW 1 Q3</span>
+V_t = euler_method(1,I_total,dt); <span class="comment">%Same function as used in HW1</span>
+subplot(2,1,2);
+plot(time.*1000, V_t, <span class="string">'linewidth'</span>, 2);
+title(sprintf(<span class="string">'Neuron: RS Response'</span>));
+xlabel(<span class="string">'Time (in ms)'</span>);
+ylabel(<span class="string">'Spikes'</span>);
+
+<span class="comment">%RESULT: MANY SPIKES OBSERVED (68) DUE TO INCREASE IN MEAN SYNAPSE WEIGHT</span>
+
+<span class="comment">% Problem 3 -- SAME STIMULUS</span>
+gamma = 1;
+w0 = 50;
+sigma_w = 5;
+syn_strength = w0 + sigma_w*randn(Ns,1); <span class="comment">%Strength gaussian -- randn -- standard normal</span>
+num_iter = 0;
+V_t = ones(1, t_size)*-0.09; <span class="comment">% to satisfy while condition</span>
+<span class="keyword">while</span>(max(V_t) &lt; -0.04)
+Iapplied = zeros(Ns,t_size);
+<span class="keyword">for</span> k = 1: Ns
+    <span class="keyword">for</span> i = 1:t_size
+        <span class="keyword">for</span> t = 1:i
+            <span class="keyword">if</span> (m_syn_stimulus(k,t) == 1)
+                Iapplied(k,i) = Iapplied(k,i) + I0*syn_strength(k,1)*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+I_total = sum(Iapplied, 1); <span class="comment">% Sum of all synapses 1 x 5000</span>
+<span class="comment">%Membrane Potential (AEF RS) :HW 1 Q3</span>
+V_t = euler_method(1,I_total,dt); <span class="comment">%Same function as used in HW1</span>
+[Max_value,Index] = max(V_t);
+t_max = Index*dt;
+<span class="comment">%Update of Weights</span>
+<span class="keyword">for</span> j = 1:Ns
+    n = (Index - 1);
+    flag = 0;
+    <span class="keyword">while</span>(n&gt;0)
+        <span class="keyword">if</span> (m_syn_stimulus(j,n) == 1)
+          flag = 1;
+          flag_stimulus = n;
+          <span class="keyword">break</span>;
+        <span class="keyword">end</span>
+        n = n-1;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span>(flag == 1)
+       del_t_k = (t_max - flag_stimulus*dt);
+       syn_strength(j,1) = syn_strength(j,1)*(1 + exp(-del_t_k/tau) - exp(-del_t_k/tau_s));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+num_iter = num_iter + 1;
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'Number of Iterations: %d\n'</span>, num_iter);
+fprintf(<span class="string">'Weights: \n'</span>);
+disp(syn_strength);
+
+figure(4);
+plot(time.*1000, V_t, <span class="string">'linewidth'</span>, 2);
+title(sprintf(<span class="string">'Neuron: RS Response - First Single Spike (3(a))'</span>));
+xlabel(<span class="string">'Time (in ms)'</span>);
+ylabel(<span class="string">'Spikes'</span>);
+</pre><pre class="codeoutput">Number of Iterations: 5
+Weights: 
+   50.5244
+   57.0077
+   55.8876
+   45.5106
+   49.0664
+   57.2939
+   48.8137
+   43.4990
+   47.4148
+   60.6483
+   49.5374
+   49.5464
+   47.2216
+   47.4357
+   42.2730
+   44.5058
+   50.2826
+   39.7105
+   55.5961
+   51.9849
+   49.1749
+  129.5885
+  183.0026
+   62.3826
+   45.6710
+   47.2058
+  234.4988
+   35.6148
+  158.5708
+   59.1098
+   47.0874
+   39.0880
+   57.7941
+  177.6290
+   48.7144
+   51.5021
+   42.8102
+   56.6017
+   45.4242
+   49.9488
+   43.9970
+   51.1354
+   51.6210
+   50.8521
+   52.9808
+   57.4230
+   46.0037
+   44.5671
+   54.5158
+   51.3653
+   44.8093
+   53.8306
+   52.3494
+   53.7189
+   42.2269
+   42.9921
+   40.2359
+   40.0077
+   58.7865
+   46.4370
+   48.4131
+   43.3341
+   45.7214
+   52.4624
+   48.6531
+   63.9908
+  187.3528
+   52.9788
+   47.0305
+   51.1733
+   55.0422
+   47.3583
+   47.4477
+   48.9391
+   46.0592
+   52.1378
+   48.9818
+   58.4018
+   51.5868
+   45.0105
+   44.3625
+   42.7471
+   47.5968
+   45.4625
+   52.5711
+   46.3577
+   56.5912
+   36.5071
+   49.1954
+   35.7589
+   51.6343
+   49.7648
+   51.9346
+   45.2834
+   52.8851
+   48.3109
+   50.4615
+   69.9949
+   54.0367
+   49.9836
+
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Problem 1
+% PART (a)
+T = 0.5;
+dt = 0.1e-3;
+k = 10;
+lambda = k*dt;
+time = (dt:dt:T);
+poisson_output = makedist('Poisson','lambda',lambda);
+t_size = length(time);
+stimulus = zeros(1,t_size);
+fprintf('Time Instants: ');
+for i = 1:t_size
+    spike = random(poisson_output,1);
+    if (spike >= 1)
+        stimulus(1,i) = 1; %spike-train
+        fprintf('%f, ', i*dt); %timestamp
+    end
+end
+figure(1);
+sgtitle(sprintf('Problem 1'));
+subplot(3,1,1);
+plot(time.*1000,stimulus(1,:), 'Linewidth',2);
+title('Poisson Stimulus');
+xlabel('Spikes');
+ylabel('Time (in ms) ');
+% PART (b) - Total Current Calculation
+I0 = 1e-12;
+we = 500;
+tau = 15e-3;
+tau_s = tau/4;
+Iapplied = zeros(1,t_size);
+for i = 1:t_size
+    for t = 1:i
+        if (stimulus(1,t) == 1)
+            Iapplied(1,i) = Iapplied(1,i) + I0*we*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));  
+        end
+    end
+end
+subplot(3,1,2);
+plot(time.*1000,Iapplied(1,:), 'Linewidth',2);
+title('Synaptic Current');
+ylabel('Iapplied');
+xlabel('Time (in ms)');
+%Membrane Potential (AEF RS) :HW 1 Q3
+V_t = euler_method(1,Iapplied,dt); %Same function as used in HW1
+subplot(3,1,3);
+plot(time.*1000, V_t, 'linewidth', 2);
+title(sprintf('Neuron: RS Response'));
+xlabel('Time (in ms)');
+ylabel('Spikes');
+%% Problem 2a
+Ns = 100;
+w0 = 50;
+sigma_w = 5;
+T = 0.5;
+dt = 1e-4;
+l_t = 1;
+lambda = l_t*dt;
+syn_strength = w0 + sigma_w*randn(Ns,1); %Strength gaussian REPLACE_WITH_DASH_DASH randn REPLACE_WITH_DASH_DASH standard normal
+time = (dt:dt:T);
+poisson_output = makedist('Poisson', 'lambda', lambda);
+t_size = length(time);
+m_syn_stimulus = zeros(Ns, t_size);
+for i = 1:Ns % Each Synapse
+    for j = 1:t_size % Each time
+        spike = random(poisson_output,1);
+        if (spike >= 1)
+         m_syn_stimulus(i,j) = 1; %spike-train
+        end
+    end
+end
+I0 = 1e-12;
+tau = 15e-3;
+tau_s = tau/4;
+Iapplied = zeros(Ns,t_size);
+for k = 1: Ns
+    for i = 1:t_size
+        for t = 1:i
+            if (m_syn_stimulus(k,t) == 1)
+                Iapplied(k,i) = Iapplied(k,i) + I0*syn_strength(k,1)*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));  
+            end
+        end
+    end
+end 
+I_total = sum(Iapplied, 1); % Sum of all synapses 1 x 5000
+figure(2);
+sgtitle(sprintf('Neuron Response with w0 = 50 and sigma_w = 5 (2(a))'));
+subplot(2,1,1);
+plot(time.*1000,I_total(1,:), 'Linewidth',2);
+title('Synaptic Current');
+ylabel('Iapplied');
+xlabel('Time (in ms)');
+%Membrane Potential (AEF RS) :HW 1 Q3
+V_t = euler_method(1,I_total,dt); %Same function as used in HW1
+subplot(2,1,2);
+plot(time.*1000, V_t, 'linewidth', 2);
+title(sprintf('Neuron: RS Response'));
+xlabel('Time (in ms)');
+ylabel('Spikes');
+
+%RESULT: NO SPIKES ISSUED, DUE TO LESS WEIGHTS
+
+%PART (b) REPLACE_WITH_DASH_DASH SAME STIMULUS
+w0 = 250;
+sigma_w = 25;
+syn_strength = w0 + sigma_w*randn(Ns,1); %Strength gaussian REPLACE_WITH_DASH_DASH randn REPLACE_WITH_DASH_DASH standard normal
+Iapplied = zeros(Ns,t_size);
+for k = 1: Ns
+    for i = 1:t_size
+        for t = 1:i
+            if (m_syn_stimulus(k,t) == 1)
+            Iapplied(k,i) = Iapplied(k,i) + I0*syn_strength(k,1)*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));  
+            end
+        end
+    end
+end 
+I_total = sum(Iapplied, 1); % Sum of all synapses 1 x 5000
+figure(3);
+sgtitle(sprintf('Neuron Response with w0 = 250 and sigma_w = 25 (2(b))'));
+subplot(2,1,1);
+plot(time.*1000,I_total(1,:), 'Linewidth',2);
+title('Synaptic Current');
+ylabel('Iapplied');
+xlabel('Time (in ms)');
+%Membrane Potential (AEF RS) :HW 1 Q3
+V_t = euler_method(1,I_total,dt); %Same function as used in HW1
+subplot(2,1,2);
+plot(time.*1000, V_t, 'linewidth', 2);
+title(sprintf('Neuron: RS Response'));
+xlabel('Time (in ms)');
+ylabel('Spikes');
+
+%RESULT: MANY SPIKES OBSERVED (68) DUE TO INCREASE IN MEAN SYNAPSE WEIGHT
+
+% Problem 3 REPLACE_WITH_DASH_DASH SAME STIMULUS
+gamma = 1;
+w0 = 50;
+sigma_w = 5;
+syn_strength = w0 + sigma_w*randn(Ns,1); %Strength gaussian REPLACE_WITH_DASH_DASH randn REPLACE_WITH_DASH_DASH standard normal
+num_iter = 0;
+V_t = ones(1, t_size)*-0.09; % to satisfy while condition
+while(max(V_t) < -0.04)
+Iapplied = zeros(Ns,t_size);
+for k = 1: Ns
+    for i = 1:t_size
+        for t = 1:i
+            if (m_syn_stimulus(k,t) == 1)
+                Iapplied(k,i) = Iapplied(k,i) + I0*syn_strength(k,1)*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));  
+            end
+        end
+    end
+end 
+I_total = sum(Iapplied, 1); % Sum of all synapses 1 x 5000
+%Membrane Potential (AEF RS) :HW 1 Q3
+V_t = euler_method(1,I_total,dt); %Same function as used in HW1
+[Max_value,Index] = max(V_t);
+t_max = Index*dt;
+%Update of Weights
+for j = 1:Ns
+    n = (Index - 1);
+    flag = 0;
+    while(n>0)
+        if (m_syn_stimulus(j,n) == 1)
+          flag = 1;
+          flag_stimulus = n;
+          break;
+        end
+        n = n-1;
+    end
+    if(flag == 1)
+       del_t_k = (t_max - flag_stimulus*dt);
+       syn_strength(j,1) = syn_strength(j,1)*(1 + exp(-del_t_k/tau) - exp(-del_t_k/tau_s));
+    end
+end
+num_iter = num_iter + 1;
+end
+
+fprintf('Number of Iterations: %d\n', num_iter);
+fprintf('Weights: \n');
+disp(syn_strength);
+
+figure(4);
+plot(time.*1000, V_t, 'linewidth', 2);
+title(sprintf('Neuron: RS Response - First Single Spike (3(a))'));
+xlabel('Time (in ms)');
+ylabel('Spikes');
+
+
+##### SOURCE END #####
+--></body></html>

@@ -17,6 +17,7 @@ for i = 1:t_size
     end
 end
 figure(1);
+sgtitle(sprintf('Problem 1'));
 subplot(3,1,1);
 plot(time.*1000,stimulus(1,:), 'Linewidth',2);
 title('Poisson Stimulus');
@@ -83,7 +84,7 @@ for k = 1: Ns
 end 
 I_total = sum(Iapplied, 1); % Sum of all synapses 1 x 5000
 figure(2);
-sgtitle(sprintf('Neuron Response with w0 = 50 and sigma_w = 5'));
+sgtitle(sprintf('Neuron Response with w0 = 50 and sigma_w = 5 (2(a))'));
 subplot(2,1,1);
 plot(time.*1000,I_total(1,:), 'Linewidth',2);
 title('Synaptic Current');
@@ -115,7 +116,7 @@ for k = 1: Ns
 end 
 I_total = sum(Iapplied, 1); % Sum of all synapses 1 x 5000
 figure(3);
-sgtitle(sprintf('Neuron Response with w0 = 250 and sigma_w = 25'));
+sgtitle(sprintf('Neuron Response with w0 = 250 and sigma_w = 25 (2(b))'));
 subplot(2,1,1);
 plot(time.*1000,I_total(1,:), 'Linewidth',2);
 title('Synaptic Current');
@@ -175,115 +176,12 @@ num_iter = num_iter + 1;
 end
 
 fprintf('Number of Iterations: %d\n', num_iter);
-fprintf('Weights: ');
+fprintf('Weights: \n');
 disp(syn_strength);
 
 figure(4);
 plot(time.*1000, V_t, 'linewidth', 2);
-title(sprintf('Neuron: RS Response'));
+title(sprintf('Neuron: RS Response - First Single Spike (3(a))'));
 xlabel('Time (in ms)');
 ylabel('Spikes');
-
-% %Result: 
-% Number of Iterations: 5
-% Weights:   165.2936
-%    53.0303
-%    47.3463
-%    49.7780
-%    49.3572
-%    98.8588
-%    45.7503
-%    51.0064
-%    52.7484
-%    45.8921
-%    47.0531
-%    53.9118
-%    40.2040
-%    47.5685
-%    51.6732
-%    47.4775
-%    48.7321
-%    59.4139
-%    42.5780
-%    43.3906
-%    49.7650
-%    58.6208
-%    48.4452
-%    48.9178
-%    53.7738
-%    46.6784
-%    54.5104
-%    54.8192
-%    52.5851
-%    58.9157
-%    42.2850
-%    52.7052
-%    49.8447
-%    50.0257
-%   123.2671
-%    55.2158
-%    44.1976
-%    53.7434
-%    81.7282
-%    53.0447
-%    53.6514
-%    50.1975
-%    45.2515
-%   305.6106
-%    51.9156
-%    36.4064
-%    50.7554
-%    70.9463
-%    45.9168
-%    49.8506
-%    48.9504
-%    54.0080
-%    49.6984
-%    53.5643
-%    48.9612
-%    49.5255
-%    40.8129
-%    48.8495
-%    51.4949
-%   156.7559
-%    56.4243
-%    47.7855
-%    41.5651
-%    55.8315
-%    58.2684
-%    52.3795
-%   185.7696
-%    46.3691
-%    58.2283
-%    54.8906
-%    53.8504
-%    43.8901
-%    56.5156
-%    43.4044
-%    46.6869
-%    53.3584
-%    50.6972
-%    44.2660
-%    44.8037
-%    51.2461
-%    50.6548
-%    51.9624
-%    71.0285
-%    44.1940
-%   108.0509
-%    57.8358
-%    50.4191
-%    47.5861
-%    51.6630
-%    77.1421
-%    45.3869
-%    41.2184
-%    46.1111
-%    54.8149
-%    46.7212
-%    49.9354
-%    45.0513
-%    41.8302
-%    46.3724
-%    52.7744
 
