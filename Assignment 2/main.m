@@ -139,6 +139,8 @@ sigma_w = 5;
 syn_strength = w0 + sigma_w*randn(Ns,1); %Strength gaussian -- randn -- standard normal
 num_iter = 0;
 V_t = ones(1, t_size)*-0.09; % to satisfy while condition
+%plot_diag - Ns x 1 x 1 x num_iter
+col = ['r', 'g', 'b', 'y', 'm', 'c', 'w', 'k']
 while(max(V_t) < -0.04)
 Iapplied = zeros(Ns,t_size);
 for k = 1: Ns
@@ -169,7 +171,10 @@ for j = 1:Ns
     end
     if(flag == 1)
        del_t_k = (t_max - flag_stimulus*dt);
-       syn_strength(j,1) = syn_strength(j,1)*(1 + exp(-del_t_k/tau) - exp(-del_t_k/tau_s));
+       del_wk = syn_strength(j,1)*(exp(-del_t_k/tau) - exp(-del_t_k/tau_s));
+       syn_strength(j,1) = del_wk + syn_strength(j,1);
+       plot_diag_wk(j, num_iter + 1) = del_wk;
+       plot_diag_tk(j, num_iter + 1) = abs(del_t_k);
     end
 end
 num_iter = num_iter + 1;
@@ -185,3 +190,11 @@ title(sprintf('Neuron: RS Response - First Single Spike (3(a))'));
 xlabel('Time (in ms)');
 ylabel('Spikes');
 
+figure(5);
+for j = 1:Ns
+    scatter(plot_diag_tk(j,:)*1000, plot_diag_wk(j,:));
+    hold on;
+end
+title('del_wk vs del_tk (3(b))');
+xlabel('del_tk (in ms)');
+ylabel('del_wk');
