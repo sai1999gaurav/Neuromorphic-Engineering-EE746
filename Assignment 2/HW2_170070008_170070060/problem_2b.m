@@ -16,7 +16,7 @@ Iapplied = zeros(Ns,t_size);
 for k = 1: Ns
     for i = 1:t_size
         for t = 1:i
-            if (m_syn_stimulus(k,t) == 1)
+            if (m_syn_stimulus(k) == t)
             Iapplied(k,i) = Iapplied(k,i) + I0*syn_strength(k,1)*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));  
             end
         end

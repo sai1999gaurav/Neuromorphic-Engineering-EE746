@@ -10,12 +10,12 @@ syn_strength = w0 + sigma_w*randn(Ns,1); %Strength gaussian -- randn -- standard
 time = (dt:dt:T);
 poisson_output = makedist('Poisson', 'lambda', lambda);
 t_size = length(time);
-m_syn_stimulus = zeros(Ns, t_size);
+m_syn_stimulus = zeros(Ns,1);
 for i = 1:Ns % Each Synapse
     for j = 1:t_size % Each time
         spike = random(poisson_output,1);
         if (spike >= 1)
-         m_syn_stimulus(i,j) = 1; %spike-train
+         m_syn_stimulus(i) = j; %spike-train
         end
     end
 end
@@ -26,7 +26,7 @@ Iapplied = zeros(Ns,t_size);
 for k = 1: Ns
     for i = 1:t_size
         for t = 1:i
-            if (m_syn_stimulus(k,t) == 1)
+            if (m_syn_stimulus(k) == t)
                 Iapplied(k,i) = Iapplied(k,i) + I0*syn_strength(k,1)*(exp(-(i - t)*dt/tau) - exp(-(i - t)*dt/tau_s));  
             end
         end
