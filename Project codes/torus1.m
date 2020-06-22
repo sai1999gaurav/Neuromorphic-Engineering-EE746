@@ -97,7 +97,7 @@ for w=1:ap,
         % Parameters initialization (o1, o2)
         %cart_coord = 2*rand(n,3);
         
-        %mag=2*rand(n,2);  
+        mag=2*rand(n,2);  
         theta=2*pi*rand(n,2);
         %z=complex(mag.*cos(theta),mag.*sin(theta));  % initializing z 
 %         coord_x = (R + r.*cos(theta(:,1))).*cos(theta(:,2));
@@ -105,30 +105,39 @@ for w=1:ap,
 %         coord_z = r.*sin(theta(:,1));
 %         coord_init= [coord_x coord_y coord_z];
 %         coord = coord_init;
-        theta_z = complex(cos(theta),sin(theta));
+        theta_z = complex(mag.*cos(theta),mag.*sin(theta));
         iter=12000;   % total no. of iterations  12000
         fac= 0.1;    % Noise Decay factor
-        alpha=5e-2;  % delta t
+        alpha=1e-2;  % delta t
         L_energy=zeros(iter,1);
-        theta_e=zeros(iter,n,2);
+        theta_e=zeros(iter,n);
         gr_L = ones(n, 2);
 
 
         %% Update of zj
         iter1 = 0;
         i = 0;
-        while ( sum(max(abs(gr_L)) > 1e-2))
+        while ( sum(max(abs(gr_L))) > 2e-2)
             i = i + 1;
             iter1 = iter1 + 1;
-            tn=2*pi*rand(n,1);
+            tn=2*pi*rand(n,1)*[1 1];
             zn=complex(cos(fac*tn),sin(fac*tn));
             fac=0.999*fac;
             theta_z=theta_z.*zn;
-            [L,gr_L]=energy_torus(city,R, r, theta_z ,kv(e),l);
-            L_energy(i)=L;
+            [L,gr_L2]= energy_3(city,theta_z(:,2),kv(e),Cv,l);
+            a = 0;
             for j=1:n
-                theta_z(j)=theta_z(j)-alpha*gr_L(j);
-                theta_e(i,j)=theta_z(j);
+                a=a+((abs(theta_z(j,1))^2)-1)^2;
+                gr_L(j,1) = ((abs(theta_z(j,1))^2)-1)*theta_z(j,1);
+            end
+            L = L + 0.5*a;
+            %[L,gr_L]=energy_torus(city,R, r, theta_z ,kv(e),l);
+            L_energy(i)=L;
+            gr_L(:,2) = gr_L2;
+            for j=1:n
+                theta_z(j,2)=theta_z(j,2)-alpha*gr_L(j,2);
+                theta_z(j,1)=theta_z(j,1)-alpha*gr_L(j,1);
+                theta_e(i,j)=theta_z(j,2);
             end
             disp(max(abs(gr_L)));
 %             if(iter1 > 13000)
@@ -272,12 +281,12 @@ a_l = 2*(R+r);
 %     %plot(z_e(k,15),'w*','MarkerSize',10);
 % 
 % end
-parm = 1;
-% plot(real(theta_e(end,1,parm)),imag(theta_e(end,1,parm)),'bx','MarkerSize',14);
-% plot(real(theta_e(end,2,parm)),imag(theta_e(end,2,parm)),'kx','MarkerSize',14);
-% plot(real(theta_e(end,3,parm)),imag(theta_e(end,3,parm)),'rx','MarkerSize',14);
-% plot(real(theta_e(end,4,parm)),imag(theta_e(end,4,parm)),'gx','MarkerSize',14);
-% plot(real(theta_e(end,5,parm)),imag(theta_e(end,5,parm)),'mx','MarkerSize',14);
+parm = 2;
+% plot(real(theta_e(end,1)),imag(theta_e(end,1)),'bx','MarkerSize',14);
+% plot(real(theta_e(end,2)),imag(theta_e(end,2)),'kx','MarkerSize',14);
+% plot(real(theta_e(end,3)),imag(theta_e(end,3)),'rx','MarkerSize',14);
+% plot(real(theta_e(end,4)),imag(theta_e(end,4)),'gx','MarkerSize',14);
+% plot(real(theta_e(end,5)),imag(theta_e(end,5)),'mx','MarkerSize',14);
 plot(real(theta_z(1,parm)),imag(theta_z(1,parm)),'bx','MarkerSize',14);
 plot(real(theta_z(2,parm)),imag(theta_z(2,parm)),'kx','MarkerSize',14);
 plot(real(theta_z(3,parm)),imag(theta_z(3,parm)),'rx','MarkerSize',14);
@@ -290,7 +299,7 @@ plot(real(theta_z(5,parm)),imag(theta_z(5,parm)),'mx','MarkerSize',14);
 % plot(real(z_e(end,8)),imag(z_e(end,8)),'k*','MarkerSize',14);
 % plot(real(z_e(end,9)),imag(z_e(end,9)),'r*','MarkerSize',14);
 % plot(real(z_e(end,10)),imag(z_e(end,10)),'g*','MarkerSize',14);
-disp(theta_z)
+disp(abs(theta_z))
 %% Roots of unity
 plot(complex(cos(a*0),sin(a*0)),'ko','MarkerSize',4);
 plot(complex(cos(a*1),sin(a*1)),'ko','MarkerSize',4);
