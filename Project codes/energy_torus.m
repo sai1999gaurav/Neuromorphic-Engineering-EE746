@@ -22,12 +22,12 @@ function [L,grad_L]=energy_torus(cities,R, r, theta_z,k,l)
     end
   end
   if l==1
-    disp('Value of terms:');
-    disp(a);
-    disp(b);
-    disp(c);
-    disp(d);
-    disp(f);
+%     disp('Value of terms:');
+%     disp(a);
+%     disp(b);
+%     disp(c);
+%     disp(d);
+%     disp(f);
   end
   L=A*a+B*b -(C/2)*c + (D/2)*d + F*f;    % tour energy
  

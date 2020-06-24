@@ -1,7 +1,7 @@
 function [L,grad_L]=energy_torus2(cities,R, r, theta_z,k,l)
   n=size(cities,1);
  
-  A= 0.1; B = 4; C = 1e-3; D = 7; F = 0;   % parameters A = 0.1, F = 0.5
+  A= 0.1; B = 4; C = 1e-5; D = 7; F = 0;   % parameters A = 0.1, F = 0.5
   
   a=0;b=0;c=0;d=0; f=0;
   z0=complex(0,1); 
@@ -27,12 +27,12 @@ function [L,grad_L]=energy_torus2(cities,R, r, theta_z,k,l)
     end
   end
   if l==1
-    disp('Value of terms:');
-    disp(a);
-    disp(b);
-    disp(c);
-    disp(d);
-    disp(f);
+%     disp('Value of terms:');
+%     disp(a);
+%     disp(b);
+%     disp(c);
+%     disp(d);
+%     disp(f);
   end
   L=A*a+B*b -(C/2)*c + (D/2)*d + F*f;    % tour energy
  
