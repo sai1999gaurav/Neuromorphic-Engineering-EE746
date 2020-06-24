@@ -26,6 +26,7 @@ city =[0.5851    0.9890;
 0.0571    0.5424;
 0.2295    0.2647];
 
+order = [1 2 3 5 4];
 % city =[0.2458    0.5678;
 %     0.6762    0.6130;
 %     0.2613    0.8070;
@@ -46,13 +47,13 @@ city =[0.5851    0.9890;
 
 l=0;
 a=(2*pi)/n;
-% figure(1);
-% hold on;
-% plot(city(1,1),city(1,2),'bx','MarkerSize',12);
-% plot(city(2,1),city(2,2),'kx','MarkerSize',12);
-% plot(city(3,1),city(3,2),'rx','MarkerSize',12);
-% plot(city(4,1),city(4,2),'gx','MarkerSize',12);
-% plot(city(5,1),city(5,2),'mx','MarkerSize',12);
+figure(1);
+hold on;
+plot(city(1,1),city(1,2),'bx','MarkerSize',12);
+plot(city(2,1),city(2,2),'kx','MarkerSize',12);
+plot(city(3,1),city(3,2),'rx','MarkerSize',12);
+plot(city(4,1),city(4,2),'gx','MarkerSize',12);
+plot(city(5,1),city(5,2),'mx','MarkerSize',12);
 % plot(city(6,1),city(6,2),'yx','MarkerSize',12);
 % 
 % plot(city(7,1),city(7,2),'b*','MarkerSize',12);
@@ -60,7 +61,7 @@ a=(2*pi)/n;
 % plot(city(9,1),city(9,2),'r*','MarkerSize',12);
 % plot(city(10,1),city(10,2),'g*','MarkerSize',12);
 
-%legend('1','2','3','4','5');
+legend('1','2','3','4','5');
 title('Coordinates of cities');
 hold off;
 
@@ -107,7 +108,10 @@ for w=1:ap,
 %         coord = coord_init;
         theta_z = complex(mag.*cos(theta),mag.*sin(theta));
         iter=12000;   % total no. of iterations  12000
-        fac= 0.1;    % Noise Decay factor
+        fac1= 0.1;    % Noise Decay factor
+        fac2 = 0.1;
+        ann1 = 1 - 1e-3;
+        ann2 = 1 - 1e-3;
         alpha=1e-2;  % delta t
         L_energy=zeros(iter,1);
         theta_e=zeros(iter,n);
@@ -117,13 +121,16 @@ for w=1:ap,
         %% Update of zj
         iter1 = 0;
         i = 0;
-        while ( sum(max(abs(gr_L))) > 2e-2)
+        while ( sum(max(abs(gr_L))) > 1e-2)
             i = i + 1;
             iter1 = iter1 + 1;
-            tn=2*pi*rand(n,1)*[1 1];
-            zn=complex(cos(fac*tn),sin(fac*tn));
-            fac=0.999*fac;
-            theta_z=theta_z.*zn;
+            tn=2*pi*rand(n,1);
+            zn1=complex(cos(fac1*tn),sin(fac1*tn));
+            fac1=ann1*fac1;
+            zn2=complex(cos(fac2*tn),sin(fac2*tn));
+            fac2=ann2*fac2;
+            theta_z(:,1) =theta_z(:,1).*zn1;
+            theta_z(:,2) =theta_z(:,2).*zn2;
             [L,gr_L2]= energy_3(city,theta_z(:,2),kv(e),Cv,l);
             a = 0;
             for j=1:n
@@ -299,7 +306,24 @@ plot(real(theta_z(5,parm)),imag(theta_z(5,parm)),'mx','MarkerSize',14);
 % plot(real(z_e(end,8)),imag(z_e(end,8)),'k*','MarkerSize',14);
 % plot(real(z_e(end,9)),imag(z_e(end,9)),'r*','MarkerSize',14);
 % plot(real(z_e(end,10)),imag(z_e(end,10)),'g*','MarkerSize',14);
-disp(abs(theta_z))
+
+%disp(angle(theta_z(:,2)));
+[sort_ang, sort_ind] = sort(angle(theta_z(:,2)));
+%disp(sort_ang);
+%disp(sort_ind);
+b_ind = find(order == sort_ind(1));
+b_ind = rem(b_ind, n) + 1;
+corr = 1;
+for i = 2:n
+    if (sort_ind(i) ~= order(b_ind))
+        corr = 0;
+        break        
+    end
+    b_ind = rem(b_ind, n) + 1;   
+end
+
+disp('corr');
+disp(corr);
 %% Roots of unity
 plot(complex(cos(a*0),sin(a*0)),'ko','MarkerSize',4);
 plot(complex(cos(a*1),sin(a*1)),'ko','MarkerSize',4);

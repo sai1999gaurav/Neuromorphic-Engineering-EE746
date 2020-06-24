@@ -73,18 +73,18 @@ kv=0.1;     % Value of parameter k
 R = 1;
 r = 0.5;
 %% testing arena!!
-% theta=2*pi*rand(n,2);
+ theta=2*pi*rand(n,2);
 %         %z=complex(mag.*cos(theta),mag.*sin(theta));  % initializing z 
 %         coord_x = (R + r.*cos(theta(:,1))).*cos(theta(:,2));
 %         coord_y = (R + r.*cos(theta(:,1))).*sin(theta(:,2));
 %         coord_z = r.*sin(theta(:,1));
 %         coord_init= [coord_x coord_y coord_z];
-% theta_z = complex(cos(theta),sin(theta));  
+theta_z = complex(cos(theta),sin(theta));  
 % i = 1;
 % A = 1;
 % d_L(i,1) = 2*A*theta_z(i,1)*((R - sqrt(coord_x(i).^2 + coord_y(i).^2))*(coord_x(i)*sin(theta(i,1)*cos(theta(i,2)) - coord_y(i)*sin(theta(i,1))*sin(theta(i,2)) - coord_z(i)*cos(theta(i,1))  )/(sqrt(coord_x(i)^2 + coord_y(i)^2))));
 % 
-% disp(d_L);
+disp(angle(theta_z));
 
 %%
 res=zeros(size(kv,2),ap);
@@ -107,7 +107,10 @@ for w=1:ap,
 %         coord = coord_init;
         theta_z = complex(mag.*cos(theta),mag.*sin(theta));
         iter=12000;   % total no. of iterations  12000
-        fac= 0.1;    % Noise Decay factor
+        fac1= 0.1;    % Noise Decay factor
+        fac2 = 0.1;
+        ann1 = 1 - 1e-3;
+        ann2 = 1 - 1e-3;
         alpha=1e-2;  % delta t
         L_energy=zeros(iter,1);
         theta_e=zeros(iter,n);
@@ -117,32 +120,28 @@ for w=1:ap,
         %% Update of zj
         iter1 = 0;
         i = 0;
-        while ( sum(max(abs(gr_L))) > 5e-2)
+        while ( (max(abs(gr_L(:,2)))) > 2e-2)
             i = i + 1;
             iter1 = iter1 + 1;
-            tn=2*pi*rand(n,1)*[1 1];
-            zn=complex(cos(fac*tn),sin(fac*tn));
-            fac=0.999*fac;
-            theta_z=theta_z.*zn;
-            [L,gr_L2]= energy_3(city,theta_z(:,2),kv(e),Cv,l);
-            a = 0;
-            for i=1:n
-                a=a+((abs(z(i))^2)-1)^2;
-                gr_L(i,1) = 2*A*((abs(z(i))^2)-1)*z(i);
-            end
-            L = L + 0.5*a;
+            tn=2*pi*rand(n,1);
+            zn1=complex(cos(fac1*tn),sin(fac1*tn));
+            fac1=ann1*fac1;
+            zn2=complex(cos(fac2*tn),sin(fac2*tn));
+            fac2=ann2*fac2;
+            theta_z(:,1) =theta_z(:,1).*zn1;
+            theta_z(:,2) =theta_z(:,2).*zn2;
             %[L,gr_L]=energy_torus(city,R, r, theta_z ,kv(e),l);
+            [L,gr_L]=energy_torus2(city,R, r, theta_z ,kv(e),l);
             L_energy(i)=L;
-            gr_L2
             for j=1:n
-                theta_z(j,2)=theta_z(j,2)-alpha*gr_L(j);
+                theta_z(j,:)=theta_z(j,:)-alpha*gr_L(j,:);
                 theta_e(i,j)=theta_z(j,2);
             end
             disp(max(abs(gr_L)));
-            if(iter1 > 13000)
-                disp('13000');
-                break;
-            end                
+%             if(iter1 > 13000)
+%                 disp('13000');
+%                 break;
+%             end                
         end
         
         
@@ -298,7 +297,7 @@ plot(real(theta_z(5,parm)),imag(theta_z(5,parm)),'mx','MarkerSize',14);
 % plot(real(z_e(end,8)),imag(z_e(end,8)),'k*','MarkerSize',14);
 % plot(real(z_e(end,9)),imag(z_e(end,9)),'r*','MarkerSize',14);
 % plot(real(z_e(end,10)),imag(z_e(end,10)),'g*','MarkerSize',14);
-disp(theta_z)
+disp(abs(theta_z))
 %% Roots of unity
 plot(complex(cos(a*0),sin(a*0)),'ko','MarkerSize',4);
 plot(complex(cos(a*1),sin(a*1)),'ko','MarkerSize',4);

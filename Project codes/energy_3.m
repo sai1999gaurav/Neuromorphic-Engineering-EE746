@@ -18,11 +18,11 @@ function [L,grad_L]=energy_3(cities,z,k,C,l)
     end
   end
   if l==1
-    disp('Value of terms:');
-    disp(a);
-    disp(b);
-    disp(c);
-    disp(d);
+%     disp('Value of terms:');
+%     disp(a);
+%     disp(b);
+%     disp(c);
+%     disp(d);
   end
   L=A*a+(B/2)*b+C*c-(D/2)*d;    % tour energy
  

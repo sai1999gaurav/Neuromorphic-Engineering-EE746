@@ -5,7 +5,7 @@ close all;
 clear all;
 
 
-n=5;
+n=8;
 % city=rand(n,2); % random init of coordinates of cities
                 % 'city' matrix and 'n' can be provided explicitly instead 
                 % of random init of coordinates of cities
@@ -20,11 +20,13 @@ n=5;
 %     0.5395    0.0192;
 %     0.9961    0.7132];
                 
-city =[0.5851    0.9890;
-0.5749    0.8064;
-0.2065    0.0430;
-0.0571    0.5424;
-0.2295    0.2647];
+% city =[0.5851    0.9890;
+% 0.5749    0.8064;
+% 0.2065    0.0430;
+% 0.0571    0.5424;
+% 0.2295    0.2647];
+
+order = [3 7 5 1 2 6 8 4];
 
 % city =[0.2458    0.5678;
 %     0.6762    0.6130;
@@ -33,15 +35,14 @@ city =[0.5851    0.9890;
 %     0.4976    0.1600;
 %     0.4278    0.0892];
 
-% city =[0.7641    0.6762;
-%      0.8    0.6058;
-%      0.1253    0.8635;
-%      0.3645    0.2920];
-
-% city =[0.5235    0.8300;
-%         0.9708    0.4900;
-%         0.4387    0.7674;
-%         0.8119    0.0133;
+city =[0.7641    0.6762;
+     0.8    0.6058;
+     0.1253    0.863;
+     0.3645    0.2920;
+     0.5235    0.8300;
+     0.9708    0.4900;
+     0.4387    0.7674;
+     0.8119    0.0133];
 %         0.8961    0.3485];                
 
 l=0;
@@ -53,16 +54,20 @@ plot(city(2,1),city(2,2),'kx','MarkerSize',12);
 plot(city(3,1),city(3,2),'rx','MarkerSize',12);
 plot(city(4,1),city(4,2),'gx','MarkerSize',12);
 plot(city(5,1),city(5,2),'mx','MarkerSize',12);
-% plot(city(6,1),city(6,2),'yx','MarkerSize',12);
-% 
-% plot(city(7,1),city(7,2),'b*','MarkerSize',12);
-% plot(city(8,1),city(8,2),'k*','MarkerSize',12);
+plot(city(6,1),city(6,2),'yx','MarkerSize',12);
+plot(city(7,1),city(7,2),'b*','MarkerSize',12);
+plot(city(8,1),city(8,2),'k*','MarkerSize',12);
 % plot(city(9,1),city(9,2),'r*','MarkerSize',12);
 % plot(city(10,1),city(10,2),'g*','MarkerSize',12);
 
-%legend('1','2','3','4','5');
-title('Coordinates of cities');
-hold off;
+legend('1','2','3','4','5', '6', '7', '8');
+%title('Coordinates of cities');
+%hold off;
+corr_sum = 0;
+fault_lim = 2;
+corr_tot = 1;
+%%
+for iter = 1:corr_tot
 
 runs=1;
 L_hist=zeros(runs,1);
@@ -77,7 +82,7 @@ for w=1:ap,
     min_E=zeros(size(kv,2),1);
     for e=1:size(kv,2),
         for k=1:runs,
-        disp(k);
+        %disp(k);
         % Parameters initialization
         mag=2*rand(n,1);
         theta=2*pi*rand(n,1);
@@ -87,6 +92,7 @@ for w=1:ap,
         iter=12000;   % total no. of iterations  12000
         fac=0.1;     % Noise Decay factor
         alpha=0.01;  % delta t
+        ann = 1 - 1e-3;
         L_energy=zeros(iter,1);
         z_e=zeros(iter,n);
         gr_L = ones(iter, 1);
@@ -100,7 +106,7 @@ for w=1:ap,
             iter1 = iter1 + 1;
             tn=2*pi*rand(n,1);
             zn=complex(cos(fac*tn),sin(fac*tn));
-            fac=0.999*fac;
+            fac=ann*fac;
             z=z.*zn;
             [L,gr_L]=energy_3(city,z,kv(e),Cv,l);
             L_energy(i)=L;
@@ -110,22 +116,24 @@ for w=1:ap,
             end
         end
         
+        disp('iterations');
+        disp(iter1);
         
         %% Plotting evolution of energy L
         if (k<=2)
-            figure(2);
-            hold on;
-            plot(L_energy,'color',rand(1,3));
-            title('Evolution of L');
-            xlabel('Iterations');
-            ylabel('Energy L');
+%             figure(2);
+%             hold on;
+%             plot(L_energy,'color',rand(1,3));
+%             title('Evolution of L');
+%             xlabel('Iterations');
+%             ylabel('Energy L');
         end
-        disp('Final L');
-        disp(L);
+        %disp('Final L');
+        %disp(L);
 
         if (mod(k,1)==0)
-            disp('gr');
-            disp(gr_L);
+            %disp('gr');
+            %disp(gr_L);
         end
         L_hist(k)=round(L*10000)/(10000);
         
@@ -144,8 +152,8 @@ for w=1:ap,
             end
         end
     end
-    disp([E,count])
-    disp(t)     % total no.of non NaN final energy
+    %disp([E,count])
+    %disp(t)     % total no.of non NaN final energy
     ind=find(isnan(E)==0);
     %figure(4);
     %bar(E(ind),count(ind)/t);
@@ -154,23 +162,23 @@ for w=1:ap,
     %ylabel('Probability');
 
     i=find(E==min(E));
-    disp('E=');
-    disp(E);
-    disp('min E=');
-    disp(min(E));
+    %disp('E=');
+    %disp(E);
+    %disp('min E=');
+    %disp(min(E));
     min_E(e)=min(E);
-    sp(e)=count(i)/t;
+    %sp(e)=count(i)/t;
     end
 
-figure(5);
-plot(kv,sp,'color',rand(1,3));
-disp('The success prob is');
-disp('C=');disp(Cv);
-disp('kv  sp min-E=');
-disp([kv',sp,min_E]);
-hold on;
-axis([0.4,2,0,1]);
-xlabel('Value of Parameter');ylabel('Success Probability');
+% figure(5);
+% plot(kv,sp,'color',rand(1,3));
+% disp('The success prob is');
+% disp('C=');disp(Cv);
+% disp('kv  sp min-E=');
+% disp([kv',sp,min_E]);
+% hold on;
+% axis([0.4,2,0,1]);
+% xlabel('Value of Parameter');ylabel('Success Probability');
 res(:,w)=sp;
 end
 
@@ -182,8 +190,8 @@ l=1;
 % plot(real(z_e(1,1)),imag(z_e(1,1)), '*');
 % hold on
 % plot(real(z_e(1,:)),imag(z_e(1,:)));
-disp('total iterations');
-disp(iter1);
+% disp('total iterations');
+% disp(iter1);
         
 figure(3);
 x=0:0.01*pi:2*pi;
@@ -243,11 +251,15 @@ axis([-1.5,1.5,-1.5,1.5]);
 % 
 % end
 
-plot(real(z_e(end,1)),imag(z_e(end,1)),'bx','MarkerSize',14);
-plot(real(z_e(end,2)),imag(z_e(end,2)),'kx','MarkerSize',14);
-plot(real(z_e(end,3)),imag(z_e(end,3)),'rx','MarkerSize',14);
-plot(real(z_e(end,4)),imag(z_e(end,4)),'gx','MarkerSize',14);
-plot(real(z_e(end,5)),imag(z_e(end,5)),'mx','MarkerSize',14);
+plot(real(z(1)),imag(z(1)),'bx','MarkerSize',14);
+plot(real(z(2)),imag(z(2)),'kx','MarkerSize',14);
+plot(real(z(3)),imag(z(3)),'rx','MarkerSize',14);
+plot(real(z(4)),imag(z(4)),'gx','MarkerSize',14);
+plot(real(z(5)),imag(z(5)),'mx','MarkerSize',14);
+plot(real(z(6)),imag(z(6)),'yx','MarkerSize',14);
+plot(real(z(7)),imag(z(7)),'r*','MarkerSize',14);
+plot(real(z(8)),imag(z(8)),'g*','MarkerSize',14);
+
 % plot(real(z_e(end,6)),imag(z_e(end,6)),'yx','MarkerSize',14);
 % 
 % plot(real(z_e(end,7)),imag(z_e(end,7)),'b*','MarkerSize',14);
@@ -255,15 +267,43 @@ plot(real(z_e(end,5)),imag(z_e(end,5)),'mx','MarkerSize',14);
 % plot(real(z_e(end,9)),imag(z_e(end,9)),'r*','MarkerSize',14);
 % plot(real(z_e(end,10)),imag(z_e(end,10)),'g*','MarkerSize',14);
 
+legend('0', '1','2','3','4','5', '6', '7', '8');
+%disp(angle(theta_z(:,2)));
+[sort_ang, sort_ind] = sort(angle(z));
+%disp(sort_ang);
+%disp(sort_ind);
+b_ind = find(order == sort_ind(1));
+b_ind = rem(b_ind, n) + 1;
+corr = 1;
+fault = 0;
+for i = 2:n
+    if (sort_ind(i) ~= order(b_ind))
+        fault = fault + 1;
+        %break        
+    end
+    if (fault > fault_lim)
+        corr = 0;
+       break 
+    end
+    b_ind = rem(b_ind, n) + 1;   
+end
+
+disp('corr');
+disp(corr);
+corr_sum = corr_sum + corr;
+end
+
+disp('success prob');
+disp(corr_sum/corr_tot);
+
 %% Roots of unity
 plot(complex(cos(a*0),sin(a*0)),'ko','MarkerSize',4);
 plot(complex(cos(a*1),sin(a*1)),'ko','MarkerSize',4);
 plot(complex(cos(a*2),sin(a*2)),'ko','MarkerSize',4);
 plot(complex(cos(a*3),sin(a*3)),'ko','MarkerSize',4);
 plot(complex(cos(a*4),sin(a*4)),'ko','MarkerSize',4);
-% plot(complex(cos(a*5),sin(a*5)),'ko','MarkerSize',4);
-% 
-% plot(complex(cos(a*6),sin(a*6)),'ko','MarkerSize',4);
-% plot(complex(cos(a*7),sin(a*7)),'ko','MarkerSize',4);
-% plot(complex(cos(a*8),sin(a*8)),'ko','MarkerSize',4);
+plot(complex(cos(a*5),sin(a*5)),'ko','MarkerSize',4);
+plot(complex(cos(a*6),sin(a*6)),'ko','MarkerSize',4);
+plot(complex(cos(a*7),sin(a*7)),'ko','MarkerSize',4);
+%plot(complex(cos(a*8),sin(a*8)),'ko','MarkerSize',4);
 % plot(complex(cos(a*9),sin(a*9)),'ko','MarkerSize',4);
