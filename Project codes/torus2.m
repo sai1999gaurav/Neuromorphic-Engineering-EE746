@@ -5,7 +5,7 @@ close all;
 clear all;
 
 
-n=8;
+n=5;
 % city=rand(n,2); % random init of coordinates of cities
                 % 'city' matrix and 'n' can be provided explicitly instead 
                 % of random init of coordinates of cities
@@ -20,24 +20,24 @@ n=8;
 %     0.5395    0.0192;
 %     0.9961    0.7132];
 %                 
-% city =[0.5851    0.9890;
-% 0.5749    0.8064;
-% 0.2065    0.0430;
-% 0.0571    0.5424;
-% 0.2295    0.2647];
+city =[0.5851    0.9890;
+0.5749    0.8064;
+0.2065    0.0430;
+0.0571    0.5424;
+0.2295    0.2647];
 
-%order = [1 2 3 5 4];
-order = [3 7 5 1 2 6 8 4];
+order = [1 2 3 5 4];
+%order = [3 7 5 1 2 6 8 4];
 %order = [7 1 6 2 5 3 10 8 9 4];
-
-city =[0.7641    0.6762;
-     0.8    0.6058;
-     0.1253    0.863;
-     0.3645    0.2920;
-     0.5235    0.8300;
-     0.9708    0.4900;
-     0.4387    0.7674;
-     0.8119    0.0133]; 
+% 
+% city =[0.7641    0.6762;
+%      0.8    0.6058;
+%      0.1253    0.863;
+%      0.3645    0.2920;
+%      0.5235    0.8300;
+%      0.9708    0.4900;
+%      0.4387    0.7674;
+%      0.8119    0.0133]; 
 
 % city =[0.2458    0.5678;
 %     0.6762    0.6130;
@@ -78,8 +78,8 @@ title('Coordinates of cities');
 hold off;
 
 corr_sum = 0;
-fault_lim = 2;
-corr_tot = 10;
+fault_lim = 1;
+corr_tot = 50;
 %%
 for iter = 1:corr_tot
 
@@ -129,7 +129,7 @@ for w=1:ap,
         fac1= 0.1;    % Noise Decay factor
         fac2 = 0.1;
         ann1 = 1 - 1e-3;
-        ann2 = 1 - 5e-4;
+        ann2 = 1 - 1e-2;
         alpha=1e-2;  % delta t
         L_energy=zeros(iter,1);
         theta_e=zeros(iter,n);
@@ -149,14 +149,16 @@ for w=1:ap,
             fac2=ann2*fac2;
             theta_z(:,1) =theta_z(:,1).*zn1;
             theta_z(:,2) =theta_z(:,2).*zn2;
-            %[L,gr_L]=energy_torus(city,R, r, theta_z ,kv(e),l);
-            [L,gr_L]=energy_torus2(city,R, r, theta_z ,kv(e),l);
+            [L,gr_L]=energy_torus(city,R, r, theta_z ,kv(e),l);
+            %[L,gr_L]=energy_torus2(city,R, r, theta_z ,kv(e),l);
             L_energy(i)=L;
             for j=1:n
                 theta_z(j,:)=theta_z(j,:)-alpha*gr_L(j,:);
                 theta_e(i,j)=theta_z(j,2);
             end
-            %disp(max(abs(gr_L)));
+           
+            disp(max(abs(gr_L)));
+
 %             if(iter1 > 13000)
 %                 disp('13000');
 %                 break;
@@ -242,11 +244,7 @@ disp(iter1);
 %axis([-1*a_l,a_l,-1*a_l,a_l]);
 
 %% To view evolution of nodes 
-% figure(3);
-% x=0:0.01*pi:2*pi;
-% z1=complex(cos(x),sin(x));
-% plot(z1,'c:');
-% hold on;
+
 % a_l = 2*(R+r);
 %axis([-1*a_l,a_l,-1*a_l,a_l]);
 % pause(5);
@@ -304,11 +302,7 @@ parm = 2;
 % plot(real(theta_e(end,3)),imag(theta_e(end,3)),'rx','MarkerSize',14);
 % plot(real(theta_e(end,4)),imag(theta_e(end,4)),'gx','MarkerSize',14);
 % plot(real(theta_e(end,5)),imag(theta_e(end,5)),'mx','MarkerSize',14);
-% plot(real(theta_z(1,parm)),imag(theta_z(1,parm)),'bx','MarkerSize',14);
-% plot(real(theta_z(2,parm)),imag(theta_z(2,parm)),'kx','MarkerSize',14);
-% plot(real(theta_z(3,parm)),imag(theta_z(3,parm)),'rx','MarkerSize',14);
-% plot(real(theta_z(4,parm)),imag(theta_z(4,parm)),'gx','MarkerSize',14);
-% plot(real(theta_z(5,parm)),imag(theta_z(5,parm)),'mx','MarkerSize',14);
+
 %hold on;
 % plot(real(z_e(end,6)),imag(z_e(end,6)),'yx','MarkerSize',14);
 % 
@@ -344,6 +338,20 @@ end
 disp('corr');
 disp(corr);
 corr_sum = corr_sum + corr;
+if (corr == 1)
+    figure(3);
+x=0:0.01*pi:2*pi;
+z1=complex(cos(x),sin(x));
+plot(z1,'c:');
+hold on;
+ plot(real(theta_z(1,parm)),imag(theta_z(1,parm)),'bx','MarkerSize',14);
+plot(real(theta_z(2,parm)),imag(theta_z(2,parm)),'kx','MarkerSize',14);
+plot(real(theta_z(3,parm)),imag(theta_z(3,parm)),'rx','MarkerSize',14);
+plot(real(theta_z(4,parm)),imag(theta_z(4,parm)),'gx','MarkerSize',14);
+plot(real(theta_z(5,parm)),imag(theta_z(5,parm)),'mx','MarkerSize',14);
+break
+end
+
 end
 
 disp('success prob');
